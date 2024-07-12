@@ -1,0 +1,36 @@
+{
+  "name": "ibrostudio/prestashop-module-helper",
+  "description": "Useful methods for Prestashop modules.",
+  "keywords": [
+    "Prestashop",
+    "modules"
+  ],
+  "homepage": "https://github.com/iBroStudio/prestashop-module-helper",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "iBroStudio",
+      "email": "hello@ibro.studio",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": "^8.1",
+    "saloonphp/saloon": "^3.9",
+    "vlucas/phpdotenv": "^5.6"
+  },
+  "require-dev": {
+    "symfony/console": "^7.1"
+  },
+  "bin": ["bin/presta"],
+  "autoload": {
+    "psr-4": {
+      "IBroStudio\\ModuleHelper\\": "src/"
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}

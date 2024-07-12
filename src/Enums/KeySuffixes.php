@@ -1,0 +1,17 @@
+<?php
+
+namespace IBroStudio\ModuleHelper\Enums;
+
+enum KeySuffixes: string
+{
+    case BASE_URL = 'BASE_URL';
+    case ENV_MODE = 'ENV_MODE';
+    case PRODUCTION_HEADER = 'PRODUCTION_HEADER';
+    case PRODUCTION_PASSWORD = 'PRODUCTION_PASSWORD';
+    case PRODUCTION_TOKEN = 'PRODUCTION_TOKEN';
+    case PRODUCTION_USERNAME = 'PRODUCTION_USERNAME';
+    case TEST_HEADER = 'TEST_HEADER';
+    case TEST_PASSWORD = 'TEST_PASSWORD';
+    case TEST_TOKEN = 'TEST_TOKEN';
+    case TEST_USERNAME = 'TEST_USERNAME';
+}

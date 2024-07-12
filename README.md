@@ -1,1 +1,4 @@
-# prestashop-module-helper
+# Prestashop Module Helper
+
+****
+**WORK IN PROGRESS**
