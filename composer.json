@@ -3,7 +3,8 @@
   "description": "Useful methods for Prestashop modules.",
   "keywords": [
     "Prestashop",
-    "modules"
+    "modules",
+    "development"
   ],
   "homepage": "https://github.com/iBroStudio/prestashop-module-helper",
   "license": "MIT",
@@ -22,7 +23,7 @@
   "require-dev": {
     "symfony/console": "^7.1"
   },
-  "bin": ["bin/presta"],
+  "bin": ["bin/presta-generator"],
   "autoload": {
     "psr-4": {
       "IBroStudio\\ModuleHelper\\": "src/"
