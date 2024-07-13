@@ -14,6 +14,23 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 function command(InputInterface $input, OutputInterface $output)
 {
+    $cmd = "/vendor/bin/presta-generator make:api";
+    $cmd = 'la -la';
+    //$process = \Symfony\Component\Process\Process::fromShellCommandline($cmd);
+    $process = new \Symfony\Component\Process\Process(['vendor/bin/presta-generator', 'make:api']);
+    $process->setTty(true);
+    $process->run();
+
+    //$process->start();
+    //$process->wait();
+// executes after the command finishes
+    if (!$process->isSuccessful()) {
+        throw new \Symfony\Component\Process\Exception\ProcessFailedException($process);
+    }
+
+    //echo $process->getOutput();
+
+    /*
     $domain = $input->getArgument('domain');
     $method = $input->getArgument('method');
 
@@ -27,6 +44,7 @@ function command(InputInterface $input, OutputInterface $output)
 
         $output->writeln("<info>{$domain} {$method} executed!</info>\n");
     }
+    */
 }
 
 (new SingleCommandApplication())
