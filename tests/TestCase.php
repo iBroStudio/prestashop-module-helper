@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests;
+namespace IBroStudio\ModuleHelper\Tests;
 
 use PHPUnit\Framework\TestCase as BaseTestCase;
 
