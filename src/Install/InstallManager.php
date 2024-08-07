@@ -7,9 +7,13 @@ use Module;
 abstract class InstallManager
 {
     abstract protected function configuration(): array;
+
     abstract protected function database(): array;
+
     abstract protected function hooks(): array;
+
     abstract protected function webservice(): array;
+
     abstract protected function apiClients(): array;
 
     private function __construct(
@@ -18,8 +22,7 @@ abstract class InstallManager
         protected array $hooks = [],
         protected array $webservice = [],
         protected array $apiClients = []
-    )
-    {
+    ) {
         $this->database = $this->database();
         $this->configuration = $this->configuration();
         $this->hooks = $this->hooks();
@@ -27,7 +30,7 @@ abstract class InstallManager
         $this->apiClients = $this->apiClients();
     }
 
-    static public function install(Module $module): bool
+    public static function install(Module $module): bool
     {
         $instance = new static();
 
@@ -62,7 +65,7 @@ abstract class InstallManager
         return true;
     }
 
-    static public function uninstall(Module $module): bool
+    public static function uninstall(Module $module): bool
     {
         $instance = new static();
 

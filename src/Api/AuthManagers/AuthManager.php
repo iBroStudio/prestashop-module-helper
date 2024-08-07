@@ -17,8 +17,7 @@ abstract class AuthManager
 
     abstract public function getAuthenticator(EnvModes $mode): ?Authenticator;
 
-    public function __construct(public string $config_key_prefix)
-    {}
+    public function __construct(public string $config_key_prefix) {}
 
     public function getConfigKeys(?EnvModes $mode = null): array
     {

@@ -12,7 +12,7 @@ final class ApiDomain extends Domain
         return "{$namespace}Api\\{$className}\\{$className}Api";
     }
 
-    protected function interactForClassName(SymfonyStyle $io): string|null
+    protected function interactForClassName(SymfonyStyle $io): ?string
     {
         $apiList = array_map(function ($directory) {
             return basename($directory);

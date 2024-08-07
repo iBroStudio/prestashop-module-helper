@@ -2,24 +2,80 @@
 
 namespace IBroStudio\ModuleHelper\Cli;
 
-use IBroStudio\ModuleHelper\Cli\Domains\ApiDomain;
-use InvalidArgumentException;
+use function Laravel\Prompts\info;
+use function Laravel\Prompts\select;
 
 final class Cli
 {
-    public static function domain(string $domain)
-    {
-        $method = 'create'.ucfirst(strtolower($domain)).'Domain';
+    public function __construct(
+        public readonly Registry $registry,
+        public readonly string $namespace,
+        protected ?string $domain = null,
+        protected string|array|null $method = null,
+        protected array $params = []
+    ) {}
 
-        if (method_exists(Cli::class, $method)) {
-            return self::$method();
+    public function build(): bool
+    {
+        $this->selectDomain();
+
+        while (! is_array($this->method)) {
+            $this->method = $this->selectMethod();
         }
 
-        throw new InvalidArgumentException("Domain [$domain] not supported.");
+        if (CliCommand::for($this->namespace, $this->params)
+            ->load($this->getCommandableClass())
+            ->run(current($this->method))) {
+            info('Command successfully executed.');
+        }
+
+        return true;
     }
 
-    public static function createApiDomain()
+    public static function parseArgv(array $argv): array
     {
-        return new ApiDomain();
+        $parsed = [];
+
+        foreach ($argv as $arg) {
+            if (count($items = explode('=', $arg)) > 1) {
+                [$key, $value] = $items;
+                if (in_array($key, ['domain', 'method', 'namespace'])) {
+                    $parsed[$key] = $value;
+                } else {
+                    $parsed['params'][$key] = $value;
+                }
+            }
+        }
+
+        return $parsed;
+    }
+
+    private function selectDomain(): void
+    {
+        if (is_null($this->domain)) {
+            $this->domain = select(
+                'Domain',
+                $this->registry->getDomains()
+            );
+        }
+
+        $this->registry->setDomain($this->domain);
+    }
+
+    private function selectMethod(): ?array
+    {
+        if (is_null($this->method)) {
+            $this->method = select(
+                'Action',
+                $this->registry->getMethods()
+            );
+        }
+
+        return $this->registry->setMethod($this->method);
+    }
+
+    private function getCommandableClass(): ?string
+    {
+        return $this->method ? key($this->method) : null;
     }
 }

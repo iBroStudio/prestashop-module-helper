@@ -2,7 +2,6 @@
 
 namespace IBroStudio\ModuleHelper\Api;
 
-use Configuration;
 use IBroStudio\ModuleHelper\Api\Concerns\InteractsWithModule;
 use IBroStudio\ModuleHelper\Api\Data\ApiConfigData;
 use IBroStudio\ModuleHelper\Enums\KeySuffixes;
@@ -15,7 +14,7 @@ class ApiConfiguration
     public ApiConfigData $values;
 
     private ApiAuthenticator $authenticator;
-    
+
     private function __construct(protected ApiClient $api)
     {
         $this->definePropertiesFromModule();
@@ -37,8 +36,8 @@ class ApiConfiguration
     {
         return [
             'baseUrl' => EnvManager::load($this->module_name, $this->mode)
-                ->get($this->config_key_prefix . KeySuffixes::BASE_URL->value),
-            'authenticator' => $this->$this->authenticator->getAuthenticator()
+                ->get($this->config_key_prefix.KeySuffixes::BASE_URL->value),
+            'authenticator' => $this->$this->authenticator->getAuthenticator(),
         ];
     }
 }

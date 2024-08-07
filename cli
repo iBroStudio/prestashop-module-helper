@@ -5,69 +5,7 @@
 require getcwd().'/vendor/autoload.php';
 
 use IBroStudio\ModuleHelper\Cli\Cli;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\SingleCommandApplication;
-use Symfony\Component\Console\Style\SymfonyStyle;
+use IBroStudio\ModuleHelper\Cli\Registry;
 
-function command(InputInterface $input, OutputInterface $output)
-{
-    $cmd = "/vendor/bin/presta-generator make:api";
-    $cmd = 'la -la';
-    //$process = \Symfony\Component\Process\Process::fromShellCommandline($cmd);
-    $process = new \Symfony\Component\Process\Process(['vendor/bin/presta-generator', 'make:api']);
-    $process->setTty(true);
-    $process->run();
+(new Cli(new Registry(), ...Cli::parseArgv($argv)))->build();
 
-    //$process->start();
-    //$process->wait();
-// executes after the command finishes
-    if (!$process->isSuccessful()) {
-        throw new \Symfony\Component\Process\Exception\ProcessFailedException($process);
-    }
-
-    //echo $process->getOutput();
-
-    /*
-    $domain = $input->getArgument('domain');
-    $method = $input->getArgument('method');
-
-    if (Cli::domain($domain)
-        ->with(
-                namespace: $input->getOption('namespace'),
-                className: $input->getOption('className')
-                    ?? new SymfonyStyle($input, $output)
-        )
-        ->run($method)) {
-
-        $output->writeln("<info>{$domain} {$method} executed!</info>\n");
-    }
-    */
-}
-
-(new SingleCommandApplication())
-    ->setName('cli')
-    ->addArgument(
-        'domain',
-        InputArgument::REQUIRED,
-        'Domain of command'
-    )
-    ->addArgument(
-        'method',
-        InputArgument::REQUIRED,
-        'Method to execute'
-    )
-    ->addOption(
-        'namespace', 'namespace',
-        InputOption::VALUE_REQUIRED,
-        'Module namespace'
-    )
-    ->addOption(
-        'className', 'className',
-        InputOption::VALUE_OPTIONAL,
-        'Class name of command'
-    )
-    ->setCode('command')
-    ->run();

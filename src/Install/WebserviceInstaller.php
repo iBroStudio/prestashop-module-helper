@@ -9,7 +9,7 @@ use WebserviceKey;
 
 class WebserviceInstaller
 {
-    static public function install(Module $module, array $permissions): bool
+    public static function install(Module $module, array $permissions): bool
     {
         $webservice = new WebserviceKey();
         $webservice->key = Tools::passwdGen(32);
@@ -20,7 +20,7 @@ class WebserviceInstaller
 
         if ($webservice) {
 
-            Configuration::updateValue(strtoupper($module->name) . '_WEBSERVICE_ID', $webservice->id);
+            Configuration::updateValue(strtoupper($module->name).'_WEBSERVICE_ID', $webservice->id);
 
             WebserviceKey::setPermissionForAccount($webservice->id, $permissions);
 
@@ -32,9 +32,9 @@ class WebserviceInstaller
         return false;
     }
 
-    static public function uninstall(Module $module): bool
+    public static function uninstall(Module $module): bool
     {
-        $webservice_configuration_key = strtoupper($module->name) . '_WEBSERVICE_ID';
+        $webservice_configuration_key = strtoupper($module->name).'_WEBSERVICE_ID';
         $webservice = new WebserviceKey(Configuration::get($webservice_configuration_key));
 
         return $webservice->delete()

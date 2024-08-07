@@ -3,11 +3,11 @@
 namespace IBroStudio\ModuleHelper\Api;
 
 use IBroStudio\ModuleHelper\Api\Data\ApiConfigData;
-use IBroStudio\ModuleHelper\Cli\Contracts\AccessibleFromCli;
+use IBroStudio\ModuleHelper\Cli\Contracts\Commandable;
 use Saloon\Http\Request;
 use Saloon\Http\Response;
 
-abstract class ApiClient implements AccessibleFromCli
+abstract class ApiClient implements Commandable
 {
     const AUTH = null;
 
@@ -34,11 +34,14 @@ abstract class ApiClient implements AccessibleFromCli
     public static function install(): bool
     {
         return true;
+
         return (new ApiInstaller(new static(loadConfig: false)))->install();
     }
 
     public static function uninstall(): bool
     {
-        return (new ApiInstaller(new static(loadConfig: false)))->uninstall();
+        return true;
+
+        return (new ApiInstaller(new static()))->uninstall();
     }
 }

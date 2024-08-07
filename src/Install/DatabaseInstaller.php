@@ -6,7 +6,7 @@ use Db;
 
 class DatabaseInstaller
 {
-    static public function install(array $database): bool
+    public static function install(array $database): bool
     {
         foreach ($database as $queries) {
             foreach ($queries as $query) {
@@ -19,7 +19,7 @@ class DatabaseInstaller
         return true;
     }
 
-    static public function uninstall(array $database): bool
+    public static function uninstall(array $database): bool
     {
         foreach (array_keys($database) as $table) {
             if (! Db::getInstance()->execute("DROP TABLE IF EXISTS `'{_DB_PREFIX_.$table}`")) {

@@ -23,17 +23,17 @@ class EnvManager
     private function __construct(Module $module, ?EnvModes $mode)
     {
         if (is_null($mode)) {
-            $mode = Configuration::get($module->name . '_' . KeySuffixes::ENV_MODE);
+            $mode = Configuration::get($module->name.'_'.KeySuffixes::ENV_MODE);
         }
 
-        $env_filename = '.env.' . $mode;
-        $env_filepath = _PS_MODULE_DIR_ . $module->name . '/' . $env_filename;
+        $env_filename = '.env.'.$mode;
+        $env_filepath = _PS_MODULE_DIR_.$module->name.'/'.$env_filename;
 
-        if (!file_exists($env_filepath)) {
+        if (! file_exists($env_filepath)) {
             throw new MissingEnvFileException("{$env_filepath} does not exist");
         }
 
-        Dotenv::create(_PS_MODULE_DIR_ . $module->name, $env_filename)->load();
+        Dotenv::create(_PS_MODULE_DIR_.$module->name, $env_filename)->load();
     }
 
     public static function load(string $name, ?EnvModes $mode = null): self
@@ -60,7 +60,7 @@ class EnvManager
 
     public function put(array $data)
     {
-// Load the .env file into a repository
+        // Load the .env file into a repository
         $repository = RepositoryBuilder::create()
             ->withReaders([
                 new RepositoryEnvConstAdapter(new EnvConstAdapter()),
@@ -71,12 +71,12 @@ class EnvManager
             ->immutable()
             ->make();
 
-// Loop through the data and update the values
+        // Loop through the data and update the values
         foreach ($data as $key => $value) {
             $repository->set($key, $value);
         }
 
-// Save the changes back to the .env file
+        // Save the changes back to the .env file
         $factory = new DotenvFactory($repository, true);
         $dotenv = Dotenv::create($repository, $factory);
         $dotenv->safeLoad();

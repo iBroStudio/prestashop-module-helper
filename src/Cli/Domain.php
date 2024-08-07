@@ -2,7 +2,7 @@
 
 namespace IBroStudio\ModuleHelper\Cli;
 
-use IBroStudio\ModuleHelper\Cli\Contracts\AccessibleFromCli;
+use IBroStudio\ModuleHelper\Cli\Contracts\Commandable;
 use InvalidArgumentException;
 use ReflectionClass;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -11,8 +11,8 @@ abstract class Domain
 {
     public function __construct(
         protected ?ReflectionClass $class = null,
-        protected ?AccessibleFromCli $instance = null,
-    ){}
+        protected ?Commandable $instance = null,
+    ) {}
 
     abstract protected function getFullyQualifiedClass(string $namespace, string $className): string;
 
@@ -23,7 +23,7 @@ abstract class Domain
         }
 
         $this->class = new ReflectionClass($this->getFullyQualifiedClass($namespace, $className));
-        $this->instance =  $this->class->newInstanceWithoutConstructor();
+        $this->instance = $this->class->newInstanceWithoutConstructor();
 
         return $this;
     }
@@ -39,7 +39,7 @@ abstract class Domain
         return true;
     }
 
-    protected function interactForClassName(SymfonyStyle $io): string|null
+    protected function interactForClassName(SymfonyStyle $io): ?string
     {
         return null;
     }

@@ -11,8 +11,7 @@ class ApiAuthenticator
         protected string $authenticator,
         public EnvModes $mode,
         public string $config_key_prefix
-    )
-    {}
+    ) {}
 
     public function getAuthenticator(): ?Authenticator
     {

@@ -17,8 +17,7 @@ class ApiConnector extends Connector
     public function __construct(
         protected readonly string $baseUrl,
         protected ?Authenticator $authenticator = null
-    )
-    {}
+    ) {}
 
     public function resolveBaseUrl(): string
     {
