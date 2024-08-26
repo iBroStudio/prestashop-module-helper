@@ -12,12 +12,14 @@ it('can instantiate Api commandable', function () {
 
 it('can call install method', function () {
     $commandable = new Api('IBroStudio\\ModuleHelper\\', 'Fake');
+    $commandable->reflectClass();
 
     expect($commandable->run('install'))->toBeTrue();
 });
 
 it('can call uninstall method', function () {
     $commandable = new Api('IBroStudio\\ModuleHelper\\', 'Fake');
+    $commandable->reflectClass();
 
     expect($commandable->run('uninstall'))->toBeTrue();
 });

@@ -14,13 +14,7 @@ class Api implements Commandable, SelectableClass
     use HasReflection;
 
     public function __construct(protected string $namespace, protected ?string $class = null)
-    {
-        if (is_null($this->class)) {
-            $this->selectClass();
-        }
-
-        $this->reflectClass();
-    }
+    {}
 
     public function run($method, $args = []): bool
     {

@@ -23,6 +23,14 @@ final class CliCommand
     {
         $this->commandable = new $class($this->namespace, $this->commanded);
 
+        if (method_exists($this->commandable, 'selectClass')) {
+            $this->commandable->selectClass();
+        }
+
+        if (method_exists($this->commandable, 'reflectClass')) {
+            $this->commandable->reflectClass();
+        }
+
         return $this;
     }
 

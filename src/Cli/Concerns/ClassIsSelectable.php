@@ -7,17 +7,21 @@ use function Laravel\Prompts\select;
 
 trait ClassIsSelectable
 {
-    public function selectClass()
+    public function selectClass(): void
     {
-        if (! count($list = $this->classList())) {
-            error('No API found');
-            exit;
-        }
+        if (is_null($this->class)) {
 
-        $this->class = select(
-            $this->classSelectLabel(),
-            $list,
-        );
+            if (! count($list = $this->classList())) {
+                error('No API found');
+                exit;
+            }
+
+            $this->class = select(
+                $this->classSelectLabel(),
+                $list,
+            );
+
+        }
     }
 
     public function classSelectLabel(): string

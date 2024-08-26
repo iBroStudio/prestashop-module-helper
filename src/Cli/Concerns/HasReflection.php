@@ -8,7 +8,7 @@ trait HasReflection
 {
     protected ReflectionClass $reflection;
 
-    protected function reflectClass()
+    public function reflectClass(): void
     {
         $this->reflection = new ReflectionClass($this->getFullyQualifiedClass());
     }

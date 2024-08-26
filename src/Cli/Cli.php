@@ -18,11 +18,16 @@ final class Cli
     public function build(): bool
     {
         $this->selectDomain();
+        //info(print_r($this->registry->getMethods()));
+
 
         while (! is_array($this->method)) {
             $this->method = $this->selectMethod();
         }
-
+        // info(print_r($this->method));  [IBroStudio\ModuleHelper\Cli\Commandables\Api] => install
+        CliCommand::for($this->namespace, $this->params)
+            ->load($this->getCommandableClass());
+        return true;
         if (CliCommand::for($this->namespace, $this->params)
             ->load($this->getCommandableClass())
             ->run(current($this->method))) {
