@@ -15,10 +15,17 @@
       "role": "Developer"
     }
   ],
+  "version": "1.0.0",
   "require": {
     "php": "^8.1",
-    "laravel/prompts": "^0.1.24",
+    "friendsofphp/php-cs-fixer": "^3.59",
+    "laravel/prompts": "^0.3",
+    "phpstan/phpstan": "^1.11",
+    "prestashop/autoindex": "^2.1",
+    "prestashop/header-stamp": "dev-no-ps-author",
+    "prestashop/php-dev-tools": "^5.0",
     "saloonphp/saloon": "^3.9",
+    "squizlabs/php_codesniffer": "^3.10",
     "symfony/console": "^6.0",
     "symfony/process": "^6.0",
     "vlucas/phpdotenv": "^5.6"
@@ -40,7 +47,11 @@
     }
   },
   "scripts": {
+    "post-update-cmd": [
+      "composer generator:update"
+    ],
     "format": "vendor/bin/pint",
+    "generator:update": "bin/presta-generator self-update",
     "test": "vendor/bin/pest",
     "test-f": "vendor/bin/pest --filter"
   },
@@ -51,5 +62,12 @@
     }
   },
   "minimum-stability": "dev",
-  "prefer-stable": true
+  "prefer-stable": true,
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/iBroStudio/header-stamp",
+      "no-api": true
+    }
+  ]
 }

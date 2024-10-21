@@ -35,7 +35,7 @@ class Command
             return $this->getClass()->newInstance();
         }
 
-        throw new \Exception($this->getClass()->getName().' needs aarguments in constructor');
+        throw new \Exception($this->getClass()->getName().' needs arguments in constructor');
     }
 
     public function run($method, $args = []): bool

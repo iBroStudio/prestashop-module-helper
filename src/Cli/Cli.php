@@ -9,25 +9,40 @@ final class Cli
 {
     public function __construct(
         public readonly Registry $registry,
-        public readonly string $namespace,
+        public ?string $namespace = null,
         protected ?string $domain = null,
         protected string|array|null $method = null,
         protected array $params = []
     ) {}
 
+    private function defineNamespace(): void
+    {
+        $composer = json_decode((string) file_get_contents(getcwd().'/composer.json'), true);
+
+        if (! $this->namespace = array_search('src/', $composer['autoload']['psr-4'])) {
+            throw new \RuntimeException('Unable to define namespace from composer.json');
+        }
+    }
+
     public function build(): bool
     {
-        $this->selectDomain();
-        //info(print_r($this->registry->getMethods()));
+        $this->defineNamespace();
 
+        $this->selectDomain();
 
         while (! is_array($this->method)) {
             $this->method = $this->selectMethod();
         }
-        // info(print_r($this->method));  [IBroStudio\ModuleHelper\Cli\Commandables\Api] => install
+
+        /*
+        info(print_r($this->getCommandableClass()));
+
         CliCommand::for($this->namespace, $this->params)
             ->load($this->getCommandableClass());
+
         return true;
+        */
+
         if (CliCommand::for($this->namespace, $this->params)
             ->load($this->getCommandableClass())
             ->run(current($this->method))) {

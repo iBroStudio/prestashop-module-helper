@@ -30,6 +30,11 @@ abstract class InstallManager
         $this->apiClients = $this->apiClients();
     }
 
+    public static function test($test): void
+    {
+        ConfigurationInstaller::install($test);
+    }
+
     public static function install(Module $module): bool
     {
         $instance = new static();

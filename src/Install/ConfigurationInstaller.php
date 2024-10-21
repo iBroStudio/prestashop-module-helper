@@ -2,14 +2,15 @@
 
 namespace IBroStudio\ModuleHelper\Install;
 
-use Configuration;
+use IBroStudio\ModuleHelper\Enums\Contracts\ConfigContract;
 
 class ConfigurationInstaller
 {
     public static function install(array $configuration): bool
     {
-        foreach ($configuration as $key => $value) {
-            if (! Configuration::updateValue($key, $value)) {
+        foreach ($configuration as $value) {
+            /* @var $value ConfigContract */
+            if (! $value->set($value->default())) {
                 return false;
             }
         }
@@ -19,8 +20,9 @@ class ConfigurationInstaller
 
     public static function uninstall(array $configuration): bool
     {
-        foreach (array_keys($configuration) as $key) {
-            if (! Configuration::deleteByName($key)) {
+        foreach ($configuration as $value) {
+            /* @var $value ConfigContract */
+            if (! $value->delete()) {
                 return false;
             }
         }

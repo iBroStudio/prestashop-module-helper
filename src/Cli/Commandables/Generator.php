@@ -21,7 +21,6 @@ class Generator implements Commandable
         $process->run();
 
         if (! $process->isSuccessful()) {
-            //return false;
             throw new ProcessFailedException($process);
         }
 
