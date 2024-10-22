@@ -4,6 +4,7 @@ namespace IBroStudio\ModuleHelper\Api\Authenticators;
 
 use Saloon\Http\PendingRequest;
 use Saloon\Contracts\Authenticator;
+use Symfony\Component\HttpFoundation\Request;
 
 class QueryTokenWithHostAuthenticator implements Authenticator
 {
@@ -13,23 +14,10 @@ class QueryTokenWithHostAuthenticator implements Authenticator
 
     public function set(PendingRequest $pendingRequest): void
     {
+        $request = Request::createFromGlobals();
+
         $pendingRequest->query()
-            ->add('host', $this->getHttpHost())
+            ->add('host', $request->getSchemeAndHttpHost())
             ->add($this->key, $this->token);
-    }
-
-    protected function getHttpHost()
-    {
-        $httpHost = '';
-        if (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != '') {
-            if (isset($_SERVER['HTTPS'])) {
-                $protocol = ($_SERVER['HTTPS'] && $_SERVER['HTTPS'] != 'off') ? 'https' : 'http';
-            } else {
-                $protocol = 'http';
-            }
-            $httpHost = $protocol . '://' . $_SERVER['HTTP_HOST'];
-        }
-
-        return $httpHost;
     }
 }
