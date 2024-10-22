@@ -31,6 +31,7 @@
         "vlucas/phpdotenv": "^5.6"
     },
     "require-dev": {
+        "ibrostudio/fake-module": "^1.0",
         "laravel/pint": "^1.16",
         "mockery/mockery": "^1.6",
         "pestphp/pest": "^2.34"
@@ -70,6 +71,10 @@
             "type": "vcs",
             "url": "https://github.com/iBroStudio/header-stamp",
             "no-api": true
+        },
+        {
+            "type": "path",
+            "url": "tests/Support/fake-module"
         }
     ]
 }

@@ -25,6 +25,7 @@ class Api implements Commandable, SelectableClass
             throw new InvalidArgumentException("Method [$method] not found in " . get_class($this->class));
         }
 */
+
         try {
             $instance->$method();
         } catch (\Exception $e) {

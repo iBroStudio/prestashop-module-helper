@@ -4,16 +4,11 @@ namespace IBroStudio\ModuleHelper\Env;
 
 use Configuration;
 use Dotenv\Dotenv;
-use Dotenv\Environment\Adapter\EnvConstAdapter;
-use Dotenv\Environment\Adapter\PutenvAdapter;
-use Dotenv\Environment\DotenvFactory;
-use Dotenv\Repository\Adapter\EnvConstAdapter as RepositoryEnvConstAdapter;
-use Dotenv\Repository\Adapter\PutenvAdapter as RepositoryPutenvAdapter;
-use Dotenv\Repository\RepositoryBuilder;
 use IBroStudio\ModuleHelper\Enums\EnvModes;
 use IBroStudio\ModuleHelper\Enums\KeySuffixes;
 use IBroStudio\ModuleHelper\Exceptions\EnvKeyNotFoundException;
 use IBroStudio\ModuleHelper\Exceptions\MissingEnvFileException;
+use MirazMac\DotEnv\Writer;
 use Module;
 
 class EnvManager
@@ -23,10 +18,10 @@ class EnvManager
     private function __construct(Module $module, ?EnvModes $mode)
     {
         if (is_null($mode)) {
-            $mode = Configuration::get($module->name.'_'.KeySuffixes::ENV_MODE);
+            $mode = Configuration::get(key: $module->name.'_'.KeySuffixes::ENV_MODE->value, default: null) ?? EnvModes::PRODUCTION;
         }
 
-        $env_filename = '.env.'.$mode;
+        $env_filename = '.env.'.$mode->value;
         $env_filepath = _PS_MODULE_DIR_.$module->name.'/'.$env_filename;
 
         if (! file_exists($env_filepath)) {
@@ -38,7 +33,7 @@ class EnvManager
 
     public static function load(string $name, ?EnvModes $mode = null): self
     {
-        if (array_key_exists($name, self::$instance)) {
+        if (isset(self::$instance) && array_key_exists($name, self::$instance)) {
             return self::$instance[$name];
         }
 
@@ -58,30 +53,72 @@ class EnvManager
         return $_ENV[$key];
     }
 
-    public function put(array $data)
+    public static function add(string $name, array $data): bool
     {
-        // Load the .env file into a repository
-        $repository = RepositoryBuilder::create()
-            ->withReaders([
-                new RepositoryEnvConstAdapter(new EnvConstAdapter()),
-            ])
-            ->withWriters([
-                new RepositoryPutenvAdapter(new PutenvAdapter()),
-            ])
-            ->immutable()
-            ->make();
+        $module = Module::getInstanceByName($name);
 
-        // Loop through the data and update the values
-        foreach ($data as $key => $value) {
-            $repository->set($key, $value);
+        foreach (['production', 'test'] as $mode) {
+            if (file_exists($file =_PS_MODULE_DIR_.$module->name.'/.env.'.$mode)) {
+                $contents = file_get_contents($file);
+                $lines = explode("\n", $contents);
+
+                foreach ($lines as &$line) {
+
+                    if (empty($line) || substr($line, 0, 1) === '#') {
+                        continue;
+                    }
+
+                    $parts = explode('=', $line, 2);
+                    $key = $parts[0];
+
+                    if (isset($data[$key])) {
+                        $line = $key . '=' . $data[$key];
+                        unset($data[$key]);
+                    }
+                }
+
+                foreach ($data as $key => $value) {
+                    $lines[] = $key . '=' . $value;
+                }
+
+                $contents = implode("\n", $lines);
+
+                file_put_contents(_PS_MODULE_DIR_.$module->name.'/.env.'.$mode, $contents);
+            }
         }
 
-        // Save the changes back to the .env file
-        $factory = new DotenvFactory($repository, true);
-        $dotenv = Dotenv::create($repository, $factory);
-        $dotenv->safeLoad();
-        $dotenv->toEnv();
+        return true;
+    }
+
+    public static function remove(string $name, array $data): bool
+    {
+        $module = Module::getInstanceByName($name);
+
+        foreach (['production', 'test'] as $mode) {
+            if (file_exists($file =_PS_MODULE_DIR_.$module->name.'/.env.'.$mode)) {
+                $contents = file_get_contents($file);
+                $lines = explode("\n", $contents);
+
+                foreach ($lines as &$line) {
+
+                    if (empty($line) || substr($line, 0, 1) === '#') {
+                        continue;
+                    }
+
+                    $parts = explode('=', $line, 2);
+                    $key = $parts[0];
+
+                    if (isset($data[$key])) {
+                        unset($lines[$key]);
+                    }
+                }
+
+                $contents = implode("\n", $lines);
+
+                file_put_contents(_PS_MODULE_DIR_.$module->name.'/.env.'.$mode, $contents);
+            }
+        }
+
+        return true;
     }
 }
-
-// EnvManager::load($module)->get('key')

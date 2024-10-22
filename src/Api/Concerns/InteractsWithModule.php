@@ -7,8 +7,6 @@ use IBroStudio\ModuleHelper\Api\ApiClient;
 use IBroStudio\ModuleHelper\Enums\EnvModes;
 use IBroStudio\ModuleHelper\Enums\KeySuffixes;
 
-use function Laravel\Prompts\info;
-
 trait InteractsWithModule
 {
     public EnvModes $mode;
@@ -23,32 +21,48 @@ trait InteractsWithModule
 
     protected function definePropertiesFromModule(): void
     {
-        $this->module_name = $this->guessModuleName();
+        $class = new \ReflectionClass($this->api);
+        $this->module_name = $this->guessModuleName(
+            dirname($class->getFileName()).'/../../../composer.json'
+        );
         $this->module_key = strtoupper($this->module_name).'_';
-        $this->config_key_prefix = $this->module_key.strtoupper(get_class($this->api)).'_';
-        $this->mode = Configuration::get($this->module_key.KeySuffixes::ENV_MODE->value);
+        $this->config_key_prefix = $this->module_key.strtoupper($class->getShortName()).'_';
+        $this->mode = Configuration::get(key: $this->module_key.KeySuffixes::ENV_MODE->value, default: null) ?? EnvModes::PRODUCTION;
     }
 
-    protected function guessModuleName(): string
+    protected function guessModuleName(string $composerFile): string
     {
-        $class = new \ReflectionClass(get_class($this));
-        preg_match('/\/modules\/(.*?)\/src/', $class->getFileName(), $matches);
+        $composer = json_decode(
+            (string) file_get_contents($composerFile),
+            true
+        );
 
-        /*
-                if (is_null($matches[1])) {
-                    info($class->getFileName());
-                    throw new \InvalidArgumentException('Module not found with name '.$class->getFileName());
-                }
-        */
-        return $matches[1];
+        if (! array_key_exists('classmap', $composer['autoload'])) {
+            throw new \Exception('Unable to find module name in composer.json classmap');
+        }
+
+        $name = null;
+
+        foreach ($composer['autoload']['classmap'] as $item) {
+            if (str_ends_with($item, '.php')) {
+                $name = substr($item, 0 ,strlen($item) - 4);
+                break;
+            }
+        }
+
+        if (is_null($name)) {
+            throw new \Exception('Unable to find module name in composer.json classmap');
+        }
+
+        return $name;
     }
 
     protected function addConfigKeyPrefix(string|array $suffix): string|array
     {
         if (is_array($suffix)) {
-            return array_map(fn ($item): string => $this->config_key_prefix.$item, $suffix);
+            return array_map(fn ($item): string => $this->config_key_prefix.$item->value, $suffix);
         }
 
-        return $this->config_key_prefix.$suffix;
+        return $this->config_key_prefix.$suffix->value;
     }
 }

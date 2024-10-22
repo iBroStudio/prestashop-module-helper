@@ -22,7 +22,8 @@ class ApiConfiguration
         $this->authenticator = new ApiAuthenticator(
             authenticator: $this->api::AUTH,
             mode: $this->mode,
-            config_key_prefix: $this->config_key_prefix
+            config_key_prefix: $this->config_key_prefix,
+            api: $api
         );
         $this->values = ApiConfigData::from($this->mapConfig());
     }
@@ -37,7 +38,7 @@ class ApiConfiguration
         return [
             'baseUrl' => EnvManager::load($this->module_name, $this->mode)
                 ->get($this->config_key_prefix.KeySuffixes::BASE_URL->value),
-            'authenticator' => $this->$this->authenticator->getAuthenticator(),
+            'authenticator' => $this->authenticator->getAuthenticator(),
         ];
     }
 }

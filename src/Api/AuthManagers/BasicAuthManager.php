@@ -22,7 +22,9 @@ class BasicAuthManager extends AuthManager
     public function getAuthenticator(EnvModes $mode): ?Authenticator
     {
         return new BasicAuthenticator(
-            ...$this->getFromDb($this->getConfigKeys($mode))
+            ...array_values(
+                $this->getFromDb($this->getConfigKeys($mode))
+            )
         );
     }
 }

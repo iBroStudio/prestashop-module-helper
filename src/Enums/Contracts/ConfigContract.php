@@ -6,9 +6,9 @@ interface ConfigContract
 {
     public function default(): string;
 
-    public function field(): array;
+    public function field(): ?array;
 
-    public static function group(string $group): array;
+    public static function group(string $group): ?array;
 
     public static function values(): array;
 

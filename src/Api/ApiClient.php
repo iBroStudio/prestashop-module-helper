@@ -11,6 +11,8 @@ abstract class ApiClient implements Commandable
 {
     const AUTH = null;
 
+    const QUERY_TOKEN_KEY = null;
+
     private static ApiClient $instance;
 
     protected ApiConfigData $config;
@@ -24,7 +26,7 @@ abstract class ApiClient implements Commandable
 
     public static function request(Request $request): Response
     {
-        if (! self::$instance) {
+        if (! isset(self::$instance)) {
             self::$instance = new static();
         }
 
@@ -33,15 +35,11 @@ abstract class ApiClient implements Commandable
 
     public static function install(): bool
     {
-        return true;
-
         return (new ApiInstaller(new static(loadConfig: false)))->install();
     }
 
     public static function uninstall(): bool
     {
-        return true;
-
         return (new ApiInstaller(new static()))->uninstall();
     }
 }

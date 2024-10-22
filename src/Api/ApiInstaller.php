@@ -3,6 +3,8 @@
 namespace IBroStudio\ModuleHelper\Api;
 
 use IBroStudio\ModuleHelper\Api\Concerns\InteractsWithModule;
+use IBroStudio\ModuleHelper\Enums\KeySuffixes;
+use IBroStudio\ModuleHelper\Env\EnvManager;
 use IBroStudio\ModuleHelper\Install\ConfigurationInstaller;
 
 class ApiInstaller
@@ -28,7 +30,9 @@ class ApiInstaller
             return false;
         }
 
-        //TODO: add baseUrl in .env files
+        EnvManager::add($this->module_name, [
+            $this->config_key_prefix.KeySuffixes::BASE_URL->value => "https://api_url"
+        ]);
 
         return true;
     }
@@ -40,7 +44,9 @@ class ApiInstaller
             return false;
         }
 
-        //TODO: removes baseUrl in .env files
+        EnvManager::remove($this->module_name, [
+            $this->config_key_prefix.KeySuffixes::BASE_URL->value
+        ]);
 
         return true;
     }

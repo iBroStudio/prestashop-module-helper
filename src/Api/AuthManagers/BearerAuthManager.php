@@ -20,7 +20,9 @@ class BearerAuthManager extends AuthManager
     public function getAuthenticator(EnvModes $mode): ?Authenticator
     {
         return new TokenAuthenticator(
-            ...$this->getFromDb($this->getConfigKeys($mode))
+            ...array_values(
+                $this->getFromDb($this->getConfigKeys($mode))
+            )
         );
     }
 }
